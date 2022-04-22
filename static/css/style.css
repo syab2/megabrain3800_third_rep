@@ -1,0 +1,88 @@
+body {
+    background-color: #c7e2ff;
+    background-image: url('../img/background.jpg');
+}
+
+.game-selection {
+    display: flex;
+    width: 1000px;
+    height: 100px;
+    border-radius: 10px;
+    margin: 20px;
+    background-color: #fff;
+}
+
+.game-description {
+    max-width: 872px;
+}
+
+.button__container {
+    margin-left: auto;
+}
+
+.btnnn {
+    right: 0;
+    width: 100px;
+    height: 100px;
+    outline: none;
+    border: none;
+}
+
+button.button {
+    display: flex;
+    background-color: rgb(30, 109, 255);
+    border: none;
+    color: whitesmoke;
+    font-size: 16px;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  
+.page {
+    width: 1109px;
+    height: 931px;
+    background-color: #fff;
+}
+
+img.game-icon {
+    position: relative;
+    border: 2px solid #000;
+    margin-top: 15px;
+    right: 15px;
+}
+
+.download-button {
+    position: relative;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.edit-game {
+    margin-top: 20px;
+    position: relative;
+    text-align: center;
+    color: green;
+}
+
+.information {
+    font-weight: 600;
+}
+
+.about {
+    margin-top: 20px;
+    border: 1px solid rgb(168, 168, 168);
+    background-color: rgb(255, 255, 255);
+    width: max-content;
+    font-size: 18px;
+    padding: 5px;
+}
+
+.birthday {
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.games-qty {
+    margin-top: 30px;
+    font-size: 20px;
+}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Add game</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.icon.label }}<br>      
+            {{ form.icon(type='file', class='form-control-file') }}
+            {% for error in form.icon.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.title.label }}<br>
+            {{ form.title(class='form-control') }}
+            {% for error in form.title.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.description.label }}<br>
+            {{ form.description(class='form-control') }}(270 symbols is max)
+            {% for error in form.description.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.archive.label }}<br>      
+            {{ form.archive(type='file', class='form-control-file') }}
+            {% for error in form.archive.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <div class="row align-items-end">
+            <p>
+                {{ form.slide1.label }}<br>  
+                {{ form.slide1(type='file', class='form-control-file') }}
+                {% for error in form.archive.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.slide2.label }}<br>  
+                {{ form.slide2(type='file', class='form-control-file') }}
+                {% for error in form.archive.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.slide3.label }}<br>  
+                {{ form.slide3(type='file', class='form-control-file') }}
+                {% for error in form.archive.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+        </div>
+        <p>{{ form.submit(type='submit', class='btn btn-primary') }}</p>
+        {{ message }}
+    </form>
+{% endblock %}

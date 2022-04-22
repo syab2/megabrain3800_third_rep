@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page">
+    <div class="row">
+        <img class='game-icon' src="{{ game.icon }}" width="250" height="250">
+        <div class="col">
+            <div class="title">
+                <h1 style="position: relative;font-size: 60px; margin-bottom: 30px; font-weight: 600;">{{ game.title }}</h1>
+            </div>
+            <div class="author">
+                <h4>Author - {{ username.nickname }}</h4>
+            </div>
+            <div class="desc">
+                <p>{{ game.description }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="slider" width="775" height="450" style="margin-top: 20px;">
+        <div id="carouselExampleControls" class="carousel slide w-100" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{{ game.slides.split(';')[0] }}" class="d-block" width="775" height="450" style="margin-left: 166px;">
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ game.slides.split(';')[1] }}" class="d-block" width="775" height="450" style="margin-left: 166px;">
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ game.slides.split(';')[2] }}" class="d-block" width="775" height="450" style="margin-left: 166px;">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="False"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+    <div class="download-button">
+        <a class="btn btn-primary btn-lg" href="{{ game.archive }}" download="">Download</a>
+    </div>  
+    {% if current_user.id == game.user_id: %}
+        <div class="edit-game"><a class="btn btn-outline-success" href="/edit-game/{{ game.id }}">Редактировать</a></div>
+    {% endif %}
+</div>
+{% endblock %}

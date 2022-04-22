@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if user.icon %}
+        <img src='{{ user.icon }}' class="rounded mx-auto d-block" width="100" height="100" id="photo" name="file">
+    {% else %}
+        <img src='{{ url_for("static", filename="img/user-icon.png") }}' class="rounded mx-auto d-block" width="100" height="100" id="photo" name="file">
+    {% endif %}
+    <div class="information">
+        <h3 class='text-center'>{{ current_user.nickname }}</h3>
+        <h3 style="font-weight: 700;">Обо мне:</h3>
+        <div class="about">
+            <p style="font-weight: normal;">{{ current_user.about }}</p>
+        </div>
+        <div class="birthday">
+            <p>Дата рождения: {{ current_user.birthday }}</p>
+        </div>
+        <p class="games-qty">Игр опубликовано: {{ games_qty }}</p>
+        <p class="fixed-bottom text-center">
+            <a type="button" class="btn btn-outline-success" href="/edit_profile">Редактировать</a>
+            <a type="button" class="btn btn-outline-danger" href="/logout">Выйти</a>
+        </p>
+    </div>
+{% endblock %}

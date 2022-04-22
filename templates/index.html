@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+    <a type="button" class="btn btn-outline-secondary" style="position: absolute; right: 0;" href="/add_game">Add game</a>
+{% endif %}
+{% for game in games %}
+    <div class="game-selection">
+        <img src="{{ game.icon }}" alt="" style="border: 1px solid #000; border-radius: 5px;" width="100" height="100">
+        <div class="theme" style="margin-left: 3px;">
+            <div class="d-flex flex-column">
+                <div class="game-title">
+                    <a class="title" href="game/{{ game.id }}" style="text-decoration: none; color: #000;"><h2>{{ game.title }}</h2></a>
+                </div>
+                <div class="game-description">
+                    <p>{{ game.description }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="button__container">
+            <button class="btnnn"><a  href="{{ game.archive }}" download=""><img src="{{ url_for('static', filename='img/download.png') }}" alt=""></a></button>
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}
