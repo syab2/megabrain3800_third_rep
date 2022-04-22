@@ -44,7 +44,7 @@
             <p>
                 {{ form.slide1.label }}<br>  
                 {{ form.slide1(type='file', class='form-control-file') }}
-                {% for error in form.archive.errors %}
+                {% for error in form.slide1.errors %}
                     <p class="alert alert-danger" role="alert">
                         {{ error }}
                     </p>
@@ -53,7 +53,7 @@
             <p>
                 {{ form.slide2.label }}<br>  
                 {{ form.slide2(type='file', class='form-control-file') }}
-                {% for error in form.archive.errors %}
+                {% for error in form.slide2.errors %}
                     <p class="alert alert-danger" role="alert">
                         {{ error }}
                     </p>
@@ -62,7 +62,7 @@
             <p>
                 {{ form.slide3.label }}<br>  
                 {{ form.slide3(type='file', class='form-control-file') }}
-                {% for error in form.archive.errors %}
+                {% for error in form.slide3.errors %}
                     <p class="alert alert-danger" role="alert">
                         {{ error }}
                     </p>

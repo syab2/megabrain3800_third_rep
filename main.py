@@ -43,7 +43,7 @@ def logout():
     return redirect("/")
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     search = SearchForm()
     db_sess = db_session.create_session()
@@ -186,6 +186,31 @@ def edit_game(id):
         form.icon.data = game.icon
         form.title.data = game.title
         form.description.data = game.description
+        form.archive.data = game.archive
+    if form.is_submitted():
+        db_sess = db_session.create_session()
+        game = db_sess.query(Game).filter(Game.id == id).first()
+        game.title = str(form.title.data).strip()
+        game.description = str(form.description.data).strip()
+        try:
+            os.mkdir(f'static/games/{game.title}')
+            os.mkdir(f'static/games/{game.title}/images')
+        except Exception:
+            pass
+
+        filename = str(''.join([str(random.randint(1, 9)) for x in range(5)])) + '_' + str(secure_filename(form.icon.data.filename))
+        form.icon.data.save(f'static/games/{game.title}/images/{filename}')
+        game.icon = url_for('static', filename=f'games/{game.title}/images/{filename}')
+
+        filename1 = str(''.join([str(random.randint(1, 9)) for x in range(5)])) + '_' + str(secure_filename(form.archive.data.filename))
+        form.archive.data.save(f'static/games/{game.title}/{filename1}')
+        game.archive = url_for('static', filename=f'games/{game.title}/{filename1}')
+
+        db_sess.commit()
+        
+        return redirect('/')
+    else:
+        print(1)
     return render_template('edit_game.html', form=form, search=search)
 
 
