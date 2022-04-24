@@ -1,4 +1,6 @@
 import os
+import shutil
+from distutils.dir_util import copy_tree
 from flask import Flask, render_template, redirect, request, url_for
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
@@ -154,10 +156,14 @@ def edit_profile():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.id == current_user.id).first()
         form.nickname.data = user.nickname
+        form.about.data = user.about
+        form.birthday.data = user.birthday
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.id == current_user.id).first()
         user.nickname = form.nickname.data
+        user.about = form.about.data
+        user.birthday = form.birthday.data
         filename = str(''.join([str(random.randint(1, 10)) for x in range(5)])) + '_' + str(secure_filename(form.icon.data.filename))
         form.icon.data.save(f'static/img/{filename}')
         user.icon = url_for('static', filename=f'img/{filename}')
@@ -190,13 +196,18 @@ def edit_game(id):
     if form.is_submitted():
         db_sess = db_session.create_session()
         game = db_sess.query(Game).filter(Game.id == id).first()
-        game.title = str(form.title.data).strip()
-        game.description = str(form.description.data).strip()
+
         try:
-            os.mkdir(f'static/games/{game.title}')
-            os.mkdir(f'static/games/{game.title}/images')
+            dirr = '_'.join(form.title.data.split())
+            os.mkdir(f'static/games/{dirr}')
+            os.mkdir(f'static/games/{dirr}/images')
+            copy_tree(f'static/games/{game.title}/images', f'static/games/{dirr}/images')
+            shutil.rmtree(f'static/games/{game.title}')
         except Exception:
             pass
+
+        game.title = '_'.join(str(form.title.data).strip().split())
+        game.description = str(form.description.data).strip()
 
         filename = str(''.join([str(random.randint(1, 9)) for x in range(5)])) + '_' + str(secure_filename(form.icon.data.filename))
         form.icon.data.save(f'static/games/{game.title}/images/{filename}')
@@ -209,8 +220,6 @@ def edit_game(id):
         db_sess.commit()
         
         return redirect('/')
-    else:
-        print(1)
     return render_template('edit_game.html', form=form, search=search)
 
 
