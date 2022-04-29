@@ -1,13 +1,14 @@
 import datetime
 import sqlalchemy
-from sqlalchemy import nullslast, orm
+from sqlalchemy import orm
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy_serializer import SerializerMixin
 
 from .db_session import SqlAlchemyBase
 
 
-class User(SqlAlchemyBase, UserMixin):
+class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     __tablename__ = 'users'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -23,6 +24,8 @@ class User(SqlAlchemyBase, UserMixin):
 
     about = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     birthday = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+
+    is_administrator = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
     games = orm.relation('Game', back_populates='user')
 

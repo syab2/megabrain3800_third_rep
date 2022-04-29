@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 
 import random
 
+from data.api import blueprint
 from data import db_session
 from data.users import User
 from data.games import Game
@@ -238,6 +239,7 @@ def search():
 
 def main():
     db_session.global_init('db/mega.db')
+    app.register_blueprint(blueprint)
     app.run()
 
 
