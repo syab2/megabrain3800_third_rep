@@ -20,7 +20,7 @@
         <form class="row align-items-center" action="" method="post">
             {{ search.hidden_tag() }}
             <span>{{ search.text(class='form-control') }}</span>
-            {{ search.submit(class="btn btn-outline-success", type='submit') }}
+            <a href="/game/1">{{ search.submit(class="btn btn-outline-success", type='submit') }}</a>
         </form>
         {% if current_user.is_authenticated: %}
             {% if current_user.icon %}
@@ -36,8 +36,8 @@
             {% endif %}
         {% else %}
             <p>
-            <a class="btn btn-outline-secondary" href="/register">Registration</a>
-            <a class="btn btn-outline-secondary " href="/login">Log in</a>
+            <a class="btn btn-outline-secondary" href="/register">Регистрация</a>
+            <a class="btn btn-outline-secondary " href="/login">Вход</a>
         </p>
         {% endif %}
     </nav>

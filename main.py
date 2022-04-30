@@ -1,7 +1,7 @@
 import os
 import shutil
 from distutils.dir_util import copy_tree
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, abort, make_response, jsonify
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
 
@@ -51,11 +51,14 @@ def index():
     search = SearchForm()
     db_sess = db_session.create_session()
     games = db_sess.query(Game).all()
+    if search.validate_on_submit():
+        return redirect(f'/search/{search.text.data}')
     try:
-        user = db_sess.query(User).filter(User.id == current_user.id)  
+        user = db_sess.query(User).filter(User.id == current_user.id)
         return render_template('index.html', user=user, current_user=current_user, games=games, search=search, title='Главная')
     except Exception:
         return render_template('index.html', current_user=current_user, games=games, search=search, title='Главная')
+        
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -82,6 +85,8 @@ def register():
         db_sess.add(user)
         db_sess.commit()
         return redirect('/')
+    if search.validate_on_submit():
+        return redirect(f'/search/{search.text.data}')
     return render_template('register.html', title='Регистрация', search=search, form=form)
 
 
@@ -98,6 +103,8 @@ def login():
         return render_template('login.html',
                                message="Неправильный логин или пароль", search=search,
                                form=form)
+    if search.validate_on_submit():
+        return redirect(f'/search/{search.text.data}')
     return render_template('login.html', title='Авторизация', search=search, form=form)
 
 
@@ -109,10 +116,17 @@ def add_game():
     count = 3
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        game = Game()
+        game = Game()   
 
-        game.title = str(form.title.data).strip()
-        game.description = str(form.description.data).strip()
+        if len(str(form.title.data).strip()) <= 40:
+            game.title = str(form.title.data).strip()
+        else:
+            game.title = str(form.title.data).strip()[:40]
+
+        if len(str(form.description.data).strip()) <= 80:
+            game.description = str(form.description.data).strip()
+        else:
+            game.description = str(form.description.data).strip()[:80]
 
         os.mkdir(f'static/games/{game.title}')
         os.mkdir(f'static/games/{game.title}/images')
@@ -145,6 +159,8 @@ def add_game():
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
+    if search.validate_on_submit():
+        return redirect(f'/search/{search.text.data}')
     return render_template('game_add.html', form=form, search=search, title='Добавление игры')
 
 
@@ -168,17 +184,21 @@ def edit_profile():
         filename = str(''.join([str(random.randint(1, 10)) for x in range(5)])) + '_' + str(secure_filename(form.icon.data.filename))
         form.icon.data.save(f'static/img/{filename}')
         user.icon = url_for('static', filename=f'img/{filename}')
-        db_sess.commit()        
+        db_sess.commit()
         return redirect('/profile')
+    if search.validate_on_submit():
+        return redirect(f'/search/{search.text.data}')
     return render_template('edit_profile.html', form=form, search=search, title='Редактирование профиля', user=user)
 
 
-@app.route('/game/<int:id>')
+@app.route('/game/<int:id>', methods=['GET', 'POST'])
 def game_page(id):
     search = SearchForm()
     db_sess = db_session.create_session()
     game = db_sess.query(Game).filter(Game.id == id).first()
     author = db_sess.query(User).filter(User.id == game.user_id).first()
+    if search.validate_on_submit():
+        return redirect(f'/search/{search.text.data}')
     return render_template('game_page.html', search=search, game=game, username=author)
 
 
@@ -221,20 +241,38 @@ def edit_game(id):
         db_sess.commit()
         
         return redirect('/')
+    if search.validate_on_submit():
+        return redirect(f'/search/{search.text.data}')
     return render_template('edit_game.html', form=form, search=search)
 
 
-@app.route('/', methods=["GET", "POST"])
-def search():
-    if request.method == 'POST':
-        form = SearchForm()
-        if form.validate_on_submit():
-            db_sess = db_session.create_session()
-            game_id = db_sess.query(Game).filter(Game.title.like(f'%{form.text.data}%')).first()
-            if game_id:
-                return redirect(f'/game/{game_id.id}')
-            else:
-                return redirect('/')
+@app.route('/delete-game/<int:id>')
+@login_required
+def gelete_game(id):
+    db_sess = db_session.create_session()
+    game = db_sess.query(Game).filter(Game.id == id).first()
+
+    if game:
+        db_sess.delete(game)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
+@app.route('/search/<title>')
+def search(title):
+    db_sess = db_session.create_session()
+    game_id = db_sess.query(Game).filter(Game.title.like(f'%{title}%')).first()
+    if game_id:
+        return redirect(f'/game/{game_id.id}')
+    else:
+        return redirect('/')
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 def main():

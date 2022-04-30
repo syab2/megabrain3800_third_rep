@@ -2,7 +2,7 @@
 
 {% block content %}
 {% if current_user.is_authenticated %}
-    <a type="button" class="btn btn-outline-secondary" style="position: absolute; right: 0;" href="/add_game">Add game</a>
+    <a type="button" class="btn btn-outline-secondary" style="position: absolute; right: 0;" href="/add_game">Добавить игру</a>
 {% endif %}
 {% for game in games %}
     <div class="game-selection">
