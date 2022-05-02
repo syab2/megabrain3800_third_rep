@@ -28,3 +28,8 @@ def get_single_game(title):
         return flask.jsonify(game.to_dict(only=('title', 'description', 'created_date', 'user_id')))
     else:
         return flask.jsonify({'error': 'Bad request'})
+
+    
+@blueprint.route('/api/help', methods=['GET'])
+def api_help():
+    return jsonify({'/api/games': 'спесок всех игр по базе данных', '/api/games/<title>': 'получить одну игру'})
