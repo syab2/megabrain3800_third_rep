@@ -260,15 +260,17 @@ def gelete_game(id):
     return redirect('/')
 
 
-@app.route('/search/<title>')
+@app.route('/search/<title>', methods=['GET', "POST"])
 def search(title):
     search = SearchForm()
     db_sess = db_session.create_session()
     game_id = db_sess.query(Game).filter(Game.title.like(f'%{title}%')).all()
+    if search.validate_on_submit():
+        return redirect(f'/search/{search.text.data}')
     if game_id:
         return render_template('index.html', search=search, games=game_id)
     else:
-        return """<h1>Игр не найдено!</h1>"""
+        return redirect('/')
 
 
 @app.errorhandler(404)
