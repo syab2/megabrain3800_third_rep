@@ -159,7 +159,7 @@ def add_game():
         db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
-    if search.validate_on_submit():
+    if search.validate_on_submit() and not form.validate_on_submit():
         return redirect(f'/search/{search.text.data}')
     return render_template('game_add.html', form=form, search=search, title='Добавление игры')
 
@@ -262,12 +262,13 @@ def gelete_game(id):
 
 @app.route('/search/<title>')
 def search(title):
+    search = SearchForm()
     db_sess = db_session.create_session()
-    game_id = db_sess.query(Game).filter(Game.title.like(f'%{title}%')).first()
+    game_id = db_sess.query(Game).filter(Game.title.like(f'%{title}%')).all()
     if game_id:
-        return redirect(f'/game/{game_id.id}')
+        return render_template('index.html', search=search, games=game_id)
     else:
-        return redirect('/')
+        return """<h1>Игр не найдено!</h1>"""
 
 
 @app.errorhandler(404)
@@ -281,6 +282,5 @@ def main():
     app.run()
 
 
-if __name__ == 'main':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+if __name__ == '__main__':
+    main()
